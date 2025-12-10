@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Integrity Tracker Pro</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // ⚙️ CONFIGURATION
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+        // 📍 LSD LOCATION DATA - Extracted from forms
+        const LSD_LOCATIONS = {
+            'Batch Quarterly Sites': [
+                '05-01 thru 07-05',
+                '11-11 to 04-12',
+                '07-12 thru 02-12 BAIT',
+                '01-26 to 16-26',
+                '04-12 thru 09-2',
+                '10-52 to 01-32 Well',
+                '07-32A to 09-32',
+                '10-52 to 10-32 Well',
+                '07-328 to 10-32 Well',
+                '04-11 to 06-11',
+                '11-02 to 06-11',
+                '09-29 to 4-21',
+                '12-10 thru 04-12',
+                '04-05 thru 07-05 to 09-32',
+                '10-32 Well to 07-28',
+                '02-33 to 09-29',
+                '16-26 to 15-25'
+            ],
+            'Day 3 Emulsion Sites': [
+                '09-06 thru 02-12 BAIT',
+                '09-32 to 06-33',
+                '06-33 to 02-33',
+                '02-01 thru 07-21 Batt',
+                '12-23 to 09-2',
+                '03-18 to 05-18'
+            ],
+            'Day 4 Emulsion Sites': [
+                '09-29 to 4-21',
+                '04-12 thru 02-14 BAIT',
+                '06-11 Eastgate to 07-21',
+                '14-21 to 07-21 Batt',
+                '05-18 to 12-17A'
+            ],
+            'Redwater Central Sites': [
+                'S-4-4',
+                'S-4-4',
+                'K-11-25',
+                'K-11-25',
+                'K-11 Pad',
+                'K-11 Pad',
+                'S-15-18R',
+                'S-15-18R',
+                '03/L-L/GR',
+                'K-11-G-R',
+                'PO/L-L/GR',
+                'S-L/L-GR',
+                'T-L/L-GR',
+                'R3/LFE/L/GR',
+                'K3/LFE/L/GR',
+                '18-3/PO-GR',
+                '5-R/R-L/GR'
+            ],
+            'Bruderheim North Sites': [
+                'T-L/L-GR',
+                'PO/L-L-GR',
+                '5-L/GR',
+                'K-11-G-R',
+                'T3/L-3-L/GR',
+                'NoPods Part',
+                'S-4-4-1'
+            ],
+            'Amelia Sites': [
+                '05-04-57-21 Pad to 05-04-57-21 Bat',
+                '01-04-57-21 Pad to 01-04-57-21 Bat',
+                '14-04-57-21 Pad to 14-04-57-21 Bat',
+                '08-04-56-21 Pad to 08-04-56-20-W4 Test Line',
+                '09-05-56-20W4 to 6-08-56-20-W4 Group Line',
+                '03-08-56-20W4 to 15-07-56-20W4',
+                '12-07-56-20W4 to 15-07-56-20W4',
+                '04-08 thru to 15-07-56-20W4 Well',
+                '03-08-56-20 Pad to 03-08-56-20W4',
+                'Redot OJAY Pad to 14-03-56-19W4 BATT'
+            ]
+        };
+
+        // 📍 COST CODES - Extracted from forms
+        const COST_CODES = [
+            '200438',
+            '200436',
+            '20119',
+            '20078',
+            '20027',
+            '20434',
+            '20425',
+            '20437',
+            '20029',
+            '200287',
+            '101863',
+            '101864',
+            '103664',
+            '101910',
+            '101911',
+            '101912',
+            '103381',
+            '103927',
+            '200032',
+            '200078',
+            '20119'
+        ];
+
+        // 📍 PIPELINE NAMES - From Pigging Records
+        const PIPELINE_NAMES = [
+            '82-056-21-thru to 1-26A-3-col',
+            '22-056-21-thru PAd to 82-3-252A-3-Col',
+            '10-056-06A-Nes-east 07-72',
+            '19-256-06A-thru PAd to A3-27-0254-W3-SAT'
+        ];
+
+        function PipelineIntegrityTracker() {
+            const [entries, setEntries] = useState(() => {
+                const saved = localStorage.getItem('pipelineEntries');
+                return saved ? JSON.parse(saved) : [];
+            });
+            const [showForm, setShowForm] = useState(false);
+            const [currentView, setCurrentView] = useState('summary');
+            const [formType, setFormType] = useState('batch');
+            const [filterType, setFilterType] = useState('all');
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [showSettings, setShowSettings] = useState(false);
+            const [scriptUrl, setScriptUrl] = useState(() => {
+                return localStorage.getItem('googleScriptUrl') || GOOGLE_SCRIPT_URL;
+            });
+
+            useEffect(() => {
+                localStorage.setItem('pipelineEntries', JSON.stringify(entries));
+            }, [entries]);
+
+            useEffect(() => {
+                localStorage.setItem('googleScriptUrl', scriptUrl);
+            }, [scriptUrl]);
+
+            const [batchForm, setBatchForm] = useState({
+                sizeNumber: '',
+                site: '',
+                costCode: '',
+                dayEmulsion: '',
+                corrosion: 0,
+                biocide: 0,
+                both: 0,
+                pigs: 0,
+                datePulled: new Date().toISOString().split('T')[0]
+            });
+
+            const [rewaterForm, setRewaterForm] = useState({
+                datePreSent: new Date().toISOString().split('T')[0],
+                dateRecovered: '',
+                site: '',
+                pigSize: '',
+                numPigs: 0,
+                scraper: false,
+                brush: false,
+                filter: false,
+                wiper: false,
+                corrosionInhibitor: 0,
+                wireline: 0
+            });
+
+            const [piggingForm, setPiggingForm] = useState({
+                location: '',
+                dateSent: new Date().toISOString().split('T')[0],
+                dateRecovered: '',
+                pipeline: '',
+                usage: 'S',
+                pigSize: '',
+                licenseNumber: '',
+                cd: '',
+                thickness: '',
+                material: '',
+                location2: '',
+                length: '',
+                corrosion: 0,
+                wireline: 0
+            });
+
+            const handleBatchChange = (e) => {
+                const { name, value } = e.target;
+                setBatchForm(prev => ({ ...prev, [name]: value }));
+            };
+
+            const handleRewaterChange = (e) => {
+                const { name, value, type, checked } = e.target;
+                setRewaterForm(prev => ({
+                    ...prev,
+                    [name]: type === 'checkbox' ? checked : value
+                }));
+            };
+
+            const handlePiggingChange = (e) => {
+                const { name, value } = e.target;
+                setPiggingForm(prev => ({ ...prev, [name]: value }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                let newEntry = { 
+                    id: Date.now(), 
+                    timestamp: new Date().toISOString(),
+                    submitted: false
+                };
+
+                if (formType === 'batch') {
+                    newEntry = { ...newEntry, type: 'batch', ...batchForm };
+                    setBatchForm({
+                        sizeNumber: '', site: '', costCode: '', dayEmulsion: '',
+                        corrosion: 0, biocide: 0, both: 0, pigs: 0,
+                        datePulled: new Date().toISOString().split('T')[0]
+                    });
+                } else if (formType === 'rewater') {
+                    newEntry = { ...newEntry, type: 'rewater', ...rewaterForm };
+                    setRewaterForm({
+                        datePreSent: new Date().toISOString().split('T')[0],
+                        dateRecovered: '', site: '', pigSize: '', numPigs: 0,
+                        scraper: false, brush: false, filter: false, wiper: false,
+                        corrosionInhibitor: 0, wireline: 0
+                    });
+                } else if (formType === 'pigging') {
+                    newEntry = { ...newEntry, type: 'pigging', ...piggingForm };
+                    setPiggingForm({
+                        location: '', dateSent: new Date().toISOString().split('T')[0],
+                        dateRecovered: '', pipeline: '', usage: 'S', pigSize: '',
+                        licenseNumber: '', cd: '', thickness: '', material: '',
+                        location2: '', length: '', corrosion: 0, wireline: 0
+                    });
+                }
+
+                setEntries(prev => [...prev, newEntry]);
+                setShowForm(false);
+            };
+
+            const submitToForeman = async () => {
+                if (!scriptUrl || scriptUrl === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                    alert('Please configure your Google Script URL in Settings first!');
+                    setShowSettings(true);
+                    return;
+                }
+
+                const unsubmittedEntries = entries.filter(e => !e.submitted);
+                
+                if (unsubmittedEntries.length === 0) {
+                    alert('No new entries to submit!');
+                    return;
+                }
+
+                if (!confirm(`Submit ${unsubmittedEntries.length} entries to foreman?`)) {
+                    return;
+                }
+
+                setIsSubmitting(true);
+
+                try {
+                    const response = await fetch(scriptUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ entries: unsubmittedEntries })
+                    });
+
+                    setEntries(prev => prev.map(entry => 
+                        unsubmittedEntries.find(e => e.id === entry.id) 
+                            ? { ...entry, submitted: true, submittedAt: new Date().toISOString() }
+                            : entry
+                    ));
+
+                    alert(`✅ Successfully submitted ${unsubmittedEntries.length} entries to foreman!`);
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    alert('❌ Error submitting data. Please check your connection and Google Script URL.');
+                }
+
+                setIsSubmitting(false);
+            };
+
+            const deleteEntry = (id) => {
+                if (confirm('Delete this entry?')) {
+                    setEntries(prev => prev.filter(entry => entry.id !== id));
+                }
+            };
+
+            const getFilteredEntries = () => {
+                if (filterType === 'all') return entries;
+                return entries.filter(entry => entry.type === filterType);
+            };
+
+            const getTotals = () => {
+                const filtered = getFilteredEntries();
+                return filtered.reduce((acc, entry) => {
+                    if (entry.type === 'batch') {
+                        return {
+                            ...acc,
+                            corrosion: acc.corrosion + (parseInt(entry.corrosion) || 0),
+                            biocide: acc.biocide + (parseInt(entry.biocide) || 0),
+                            both: acc.both + (parseInt(entry.both) || 0),
+                            pigs: acc.pigs + (parseInt(entry.pigs) || 0)
+                        };
+                    } else if (entry.type === 'rewater') {
+                        return {
+                            ...acc,
+                            rewaterPigs: acc.rewaterPigs + (parseInt(entry.numPigs) || 0),
+                            rewaterCorrosion: acc.rewaterCorrosion + (parseInt(entry.corrosionInhibitor) || 0),
+                            rewaterWireline: acc.rewaterWireline + (parseInt(entry.wireline) || 0)
+                        };
+                    } else if (entry.type === 'pigging') {
+                        return {
+                            ...acc,
+                            piggingCorrosion: acc.piggingCorrosion + (parseInt(entry.corrosion) || 0),
+                            piggingWireline: acc.piggingWireline + (parseInt(entry.wireline) || 0),
+                            totalLength: acc.totalLength + (parseFloat(entry.length) || 0)
+                        };
+                    }
+                    return acc;
+                }, {
+                    corrosion: 0, biocide: 0, both: 0, pigs: 0,
+                    rewaterPigs: 0, rewaterCorrosion: 0, rewaterWireline: 0,
+                    piggingCorrosion: 0, piggingWireline: 0, totalLength: 0
+                });
+            };
+
+            const totals = getTotals();
+            const filteredEntries = getFilteredEntries();
+            const unsubmittedCount = entries.filter(e => !e.submitted).length;
+
+            const exportData = () => {
+                const dataStr = JSON.stringify(entries, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `pipeline-integrity-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-slate-800 to-blue-900 text-white shadow-lg">
+                        <div className="px-4 py-5 flex justify-between items-center">
+                            <div>
+                                <h1 className="text-2xl font-bold mb-1">Pipeline Integrity Pro</h1>
+                                <p className="text-blue-200 text-sm">Complete Tracking System</p>
+                            </div>
+                            <button
+                                onClick={() => setShowSettings(true)}
+                                className="text-2xl"
+                            >
+                                ⚙️
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Navigation */}
+                    <div className="bg-white shadow-sm border-b sticky top-0 z-10">
+                        <div className="flex">
+                            <button
+                                onClick={() => setCurrentView('summary')}
+                                className={`flex-1 py-3 px-4 text-sm font-medium ${
+                                    currentView === 'summary'
+                                        ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
+                                        : 'text-gray-600'
+                                }`}
+                            >
+                                📊 Summary
+                            </button>
+                            <button
+                                onClick={() => setCurrentView('entries')}
+                                className={`flex-1 py-3 px-4 text-sm font-medium ${
+                                    currentView === 'entries'
+                                        ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-600'
+                                        : 'text-gray-600'
+                                }`}
+                            >
+                                📝 Entries ({filteredEntries.length})
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="p-4 pb-32">
+                        {/* Summary View */}
+                        {currentView === 'summary' && (
+                            <div className="space-y-4">
+                                {unsubmittedCount > 0 && (
+                                    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <div className="text-yellow-800 font-semibold">
+                                                    {unsubmittedCount} entries ready to submit
+                                                </div>
+                                                <div className="text-yellow-700 text-sm">
+                                                    Tap "Submit to Foreman" below to send
+                                                </div>
+                                            </div>
+                                            <div className="text-3xl">📤</div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="bg-white rounded-xl shadow-md p-2 flex gap-2">
+                                    <button
+                                        onClick={() => setFilterType('all')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
+                                            filterType === 'all'
+                                                ? 'bg-blue-600 text-white'
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}
+                                    >
+                                        All
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('batch')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
+                                            filterType === 'batch'
+                                                ? 'bg-green-600 text-white'
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}
+                                    >
+                                        Batch
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('rewater')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
+                                            filterType === 'rewater'
+                                                ? 'bg-purple-600 text-white'
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}
+                                    >
+                                        Redwater
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('pigging')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
+                                            filterType === 'pigging'
+                                                ? 'bg-orange-600 text-white'
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}
+                                    >
+                                        Pigging
+                                    </button>
+                                </div>
+
+                                {(filterType === 'all' || filterType === 'batch') && (
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-3">Batch Quarterly</h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-green-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Corrosion</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.corrosion}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Biocide</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.biocide}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-purple-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Both</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.both}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-orange-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Pigs</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.pigs}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {(filterType === 'all' || filterType === 'rewater') && (
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-3">Redwater Central</h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-purple-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Total Pigs</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.rewaterPigs}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-green-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Corrosion Inh.</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.rewaterCorrosion}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-indigo-500 col-span-2">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Wireline</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.rewaterWireline}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {(filterType === 'all' || filterType === 'pigging') && (
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-3">Pigging Records</h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-orange-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Corrosion</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.piggingCorrosion}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Wireline</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.piggingWireline}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-teal-500 col-span-2">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Total Length (m)</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.totalLength.toFixed(1)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
+                                    <div className="text-blue-100 text-sm font-medium uppercase mb-2">Total Entries</div>
+                                    <div className="text-5xl font-bold">{filteredEntries.length}</div>
+                                </div>
+
+                                {filteredEntries.length > 0 && (
+                                    <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                                        <div className="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
+                                            <h3 className="font-semibold text-gray-900">Recent Activity</h3>
+                                            <button
+                                                onClick={exportData}
+                                                className="text-xs text-blue-600 font-medium px-3 py-1 bg-blue-50 rounded-lg"
+                                            >
+                                                Export
+                                            </button>
+                                        </div>
+                                        <div className="divide-y max-h-96 overflow-y-auto">
+                                            {filteredEntries.slice(-8).reverse().map(entry => (
+                                                <div key={entry.id} className="p-4">
+                                                    <div className="flex items-start justify-between mb-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={`inline-block px-2 py-1 rounded text-xs font-bold text-white ${
+                                                                entry.type === 'batch' ? 'bg-green-500' :
+                                                                entry.type === 'rewater' ? 'bg-purple-500' : 'bg-orange-500'
+                                                            }`}>
+                                                                {entry.type.toUpperCase()}
+                                                            </span>
+                                                            {entry.submitted && (
+                                                                <span className="text-xs text-green-600">✓ Submitted</span>
+                                                            )}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">
+                                                            {entry.type === 'batch' ? entry.datePulled :
+                                                             entry.type === 'rewater' ? entry.datePreSent :
+                                                             entry.dateSent}
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-sm font-medium text-gray-900">
+                                                        {entry.type === 'batch' && entry.site}
+                                                        {entry.type === 'rewater' && `${entry.site || 'Site'} - ${entry.numPigs} pigs`}
+                                                        {entry.type === 'pigging' && entry.location}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Entries View - keeping existing code */}
+                        {currentView === 'entries' && (
+                            <div className="space-y-3">
+                                <div className="bg-white rounded-xl shadow-md p-2 flex gap-2 sticky top-16 z-10">
+                                    <button
+                                        onClick={() => setFilterType('all')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
+                                            filterType === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                                        }`}
+                                    >
+                                        All
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('batch')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
+                                            filterType === 'batch' ? 'bg-green-600 text-white' : 'bg-gray-100'
+                                        }`}
+                                    >
+                                        Batch
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('rewater')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
+                                            filterType === 'rewater' ? 'bg-purple-600 text-white' : 'bg-gray-100'
+                                        }`}
+                                    >
+                                        Redwater
+                                    </button>
+                                    <button
+                                        onClick={() => setFilterType('pigging')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
+                                            filterType === 'pigging' ? 'bg-orange-600 text-white' : 'bg-gray-100'
+                                        }`}
+                                    >
+                                        Pigging
+                                    </button>
+                                </div>
+
+                                {filteredEntries.length === 0 ? (
+                                    <div className="bg-white rounded-xl shadow-md p-8 text-center">
+                                        <div className="text-gray-400 text-5xl mb-3">📋</div>
+                                        <p className="text-gray-600">No entries yet</p>
+                                        <p className="text-gray-400 text-sm mt-1">Tap + to add your first entry</p>
+                                    </div>
+                                ) : (
+                                    filteredEntries.map(entry => (
+                                        <div key={entry.id} className={`bg-white rounded-xl shadow-md overflow-hidden border-l-4 ${
+                                            entry.type === 'batch' ? 'border-green-500' :
+                                            entry.type === 'rewater' ? 'border-purple-500' : 'border-orange-500'
+                                        }`}>
+                                            <div className="p-4">
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={`px-3 py-1 rounded-lg text-xs font-bold text-white ${
+                                                            entry.type === 'batch' ? 'bg-green-500' :
+                                                            entry.type === 'rewater' ? 'bg-purple-500' : 'bg-orange-500'
+                                                        }`}>
+                                                            {entry.type.toUpperCase()}
+                                                        </span>
+                                                        {entry.submitted && (
+                                                            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded">
+                                                                ✓ Submitted
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <button
+                                                        onClick={() => deleteEntry(entry.id)}
+                                                        className="text-red-600 text-xl"
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                </div>
+
+                                                {entry.type === 'batch' && (
+                                                    <>
+                                                        <div className="text-lg font-bold text-gray-900 mb-2">{entry.site}</div>
+                                                        <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Size</div>
+                                                                <div className="font-semibold">{entry.sizeNumber}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Cost Code</div>
+                                                                <div className="font-semibold">{entry.costCode}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-4 gap-2 mb-2">
+                                                            <div className="bg-green-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-green-600">Corr</div>
+                                                                <div className="text-lg font-bold text-green-700">{entry.corrosion}</div>
+                                                            </div>
+                                                            <div className="bg-blue-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-blue-600">Bio</div>
+                                                                <div className="text-lg font-bold text-blue-700">{entry.biocide}</div>
+                                                            </div>
+                                                            <div className="bg-purple-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-purple-600">Both</div>
+                                                                <div className="text-lg font-bold text-purple-700">{entry.both}</div>
+                                                            </div>
+                                                            <div className="bg-orange-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-orange-600">Pigs</div>
+                                                                <div className="text-lg font-bold text-orange-700">{entry.pigs}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-xs text-gray-600 border-t pt-2">
+                                                            {entry.dayEmulsion && <div>Day/Emul: {entry.dayEmulsion}</div>}
+                                                            <div>Date: {entry.datePulled}</div>
+                                                        </div>
+                                                    </>
+                                                )}
+
+                                                {entry.type === 'rewater' && (
+                                                    <>
+                                                        <div className="text-lg font-bold text-gray-900 mb-2">
+                                                            {entry.site || 'Site'} - Pig Size: {entry.pigSize}
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-2 mb-3">
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Num Pigs</div>
+                                                                <div className="text-xl font-bold">{entry.numPigs}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Types</div>
+                                                                <div className="text-xs">
+                                                                    {entry.scraper && '🔧 Scraper '}
+                                                                    {entry.brush && '🖌️ Brush '}
+                                                                    {entry.filter && '🔍 Filter '}
+                                                                    {entry.wiper && '🧹 Wiper'}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-2 mb-2">
+                                                            <div className="bg-green-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-green-600">Corr. Inh.</div>
+                                                                <div className="text-lg font-bold text-green-700">{entry.corrosionInhibitor}</div>
+                                                            </div>
+                                                            <div className="bg-blue-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-blue-600">Wireline</div>
+                                                                <div className="text-lg font-bold text-blue-700">{entry.wireline}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-xs text-gray-600 border-t pt-2">
+                                                            <div>Sent: {entry.datePreSent}</div>
+                                                            {entry.dateRecovered && <div>Recovered: {entry.dateRecovered}</div>}
+                                                        </div>
+                                                    </>
+                                                )}
+
+                                                {entry.type === 'pigging' && (
+                                                    <>
+                                                        <div className="text-lg font-bold text-gray-900 mb-2">{entry.location}</div>
+                                                        <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Pipeline</div>
+                                                                <div className="font-semibold">{entry.pipeline}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Pig Size</div>
+                                                                <div className="font-semibold">{entry.pigSize}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">License</div>
+                                                                <div className="font-semibold">{entry.licenseNumber}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Length (m)</div>
+                                                                <div className="font-semibold">{entry.length}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-2 mb-2">
+                                                            <div className="bg-orange-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-orange-600">Corrosion</div>
+                                                                <div className="text-lg font-bold text-orange-700">{entry.corrosion}</div>
+                                                            </div>
+                                                            <div className="bg-blue-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-blue-600">Wireline</div>
+                                                                <div className="text-lg font-bold text-blue-700">{entry.wireline}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-xs text-gray-600 border-t pt-2">
+                                                            <div>Material: {entry.material} | Thickness: {entry.thickness}</div>
+                                                            <div>Sent: {entry.dateSent} {entry.dateRecovered && `| Recovered: ${entry.dateRecovered}`}</div>
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Bottom Buttons */}
+                    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4 space-y-2">
+                        {unsubmittedCount > 0 && (
+                            <button
+                                onClick={submitToForeman}
+                                disabled={isSubmitting}
+                                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl py-3 font-semibold shadow-lg active:scale-95 transition disabled:opacity-50"
+                            >
+                                {isSubmitting ? '📤 Submitting...' : `📤 Submit to Foreman (${unsubmittedCount})`}
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setShowForm(true)}
+                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl py-3 font-semibold shadow-lg active:scale-95 transition"
+                        >
+                            + Add New Entry
+                        </button>
+                    </div>
+
+                    {/* Settings Modal */}
+                    {showSettings && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+                            <div className="min-h-screen px-4 py-8 flex items-center">
+                                <div className="bg-white rounded-xl shadow-2xl max-w-lg mx-auto w-full">
+                                    <div className="bg-gradient-to-r from-slate-700 to-slate-900 text-white px-6 py-4 rounded-t-xl">
+                                        <h2 className="text-xl font-bold">⚙️ Settings</h2>
+                                    </div>
+                                    <div className="p-6 space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                Google Apps Script URL
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={scriptUrl}
+                                                onChange={(e) => setScriptUrl(e.target.value)}
+                                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                                                placeholder="https://script.google.com/macros/s/..."
+                                            />
+                                            <p className="text-xs text-gray-500 mt-2">
+                                                Paste your Google Apps Script Web App URL here
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => setShowSettings(false)}
+                                            className="w-full bg-blue-600 text-white rounded-lg py-3 font-semibold"
+                                        >
+                                            Save Settings
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Form Modal */}
+                    {showForm && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 overflow-y-auto">
+                            <div className="min-h-screen px-4 py-8">
+                                <div className="bg-white rounded-xl shadow-2xl max-w-lg mx-auto">
+                                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 rounded-t-xl">
+                                        <h2 className="text-xl font-bold">New Entry</h2>
+                                    </div>
+
+                                    <div className="p-4 border-b bg-gray-50">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">Form Type</label>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormType('batch')}
+                                                className={`py-3 rounded-lg text-sm font-semibold transition ${
+                                                    formType === 'batch'
+                                                        ? 'bg-green-600 text-white'
+                                                        : 'bg-white border-2 border-gray-300 text-gray-700'
+                                                }`}
+                                            >
+                                                Batch
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormType('rewater')}
+                                                className={`py-3 rounded-lg text-sm font-semibold transition ${
+                                                    formType === 'rewater'
+                                                        ? 'bg-purple-600 text-white'
+                                                        : 'bg-white border-2 border-gray-300 text-gray-700'
+                                                }`}
+                                            >
+                                                Redwater
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormType('pigging')}
+                                                className={`py-3 rounded-lg text-sm font-semibold transition ${
+                                                    formType === 'pigging'
+                                                        ? 'bg-orange-600 text-white'
+                                                        : 'bg-white border-2 border-gray-300 text-gray-700'
+                                                }`}
+                                            >
+                                                Pigging
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+                                        {/* BATCH FORM WITH DROPDOWNS */}
+                                        {formType === 'batch' && (
+                                            <>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Size #</label>
+                                                        <input
+                                                            type="text"
+                                                            name="sizeNumber"
+                                                            value={batchForm.sizeNumber}
+                                                            onChange={handleBatchChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Day/Emulsion</label>
+                                                        <select
+                                                            name="dayEmulsion"
+                                                            value={batchForm.dayEmulsion}
+                                                            onChange={handleBatchChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        >
+                                                            <option value="">Select Day...</option>
+                                                            <option value="Day 1">Day 1</option>
+                                                            <option value="Day 2">Day 2</option>
+                                                            <option value="Day 3">Day 3</option>
+                                                            <option value="Day 4">Day 4</option>
+                                                            <option value="Day 5">Day 5</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Site Location</label>
+                                                    <select
+                                                        name="site"
+                                                        value={batchForm.site}
+                                                        onChange={handleBatchChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        required
+                                                    >
+                                                        <option value="">Select Site...</option>
+                                                        {Object.entries(LSD_LOCATIONS).map(([category, sites]) => (
+                                                            <optgroup key={category} label={category}>
+                                                                {sites.map(site => (
+                                                                    <option key={site} value={site}>{site}</option>
+                                                                ))}
+                                                            </optgroup>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Cost Code</label>
+                                                    <select
+                                                        name="costCode"
+                                                        value={batchForm.costCode}
+                                                        onChange={handleBatchChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        required
+                                                    >
+                                                        <option value="">Select Cost Code...</option>
+                                                        {COST_CODES.map(code => (
+                                                            <option key={code} value={code}>{code}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-green-700 mb-1">Corrosion</label>
+                                                        <input
+                                                            type="number"
+                                                            name="corrosion"
+                                                            value={batchForm.corrosion}
+                                                            onChange={handleBatchChange}
+                                                            className="w-full border border-green-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-blue-700 mb-1">Biocide</label>
+                                                        <input
+                                                            type="number"
+                                                            name="biocide"
+                                                            value={batchForm.biocide}
+                                                            onChange={handleBatchChange}
+                                                            className="w-full border border-blue-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-purple-700 mb-1">Both</label>
+                                                        <input
+                                                            type="number"
+                                                            name="both"
+                                                            value={batchForm.both}
+                                                            onChange={handleBatchChange}
+                                                            className="w-full border border-purple-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-orange-700 mb-1">Pigs</label>
+                                                        <input
+                                                            type="number"
+                                                            name="pigs"
+                                                            value={batchForm.pigs}
+                                                            onChange={handleBatchChange}
+                                                            className="w-full border border-orange-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Date Pulled</label>
+                                                    <input
+                                                        type="date"
+                                                        name="datePulled"
+                                                        value={batchForm.datePulled}
+                                                        onChange={handleBatchChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        required
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* REDWATER FORM WITH DROPDOWNS */}
+                                        {formType === 'rewater' && (
+                                            <>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Site Location</label>
+                                                    <select
+                                                        name="site"
+                                                        value={rewaterForm.site}
+                                                        onChange={handleRewaterChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        required
+                                                    >
+                                                        <option value="">Select Site...</option>
+                                                        <optgroup label="Redwater Central Sites">
+                                                            {LSD_LOCATIONS['Redwater Central Sites'].map(site => (
+                                                                <option key={site} value={site}>{site}</option>
+                                                            ))}
+                                                        </optgroup>
+                                                        <optgroup label="Bruderheim North Sites">
+                                                            {LSD_LOCATIONS['Bruderheim North Sites'].map(site => (
+                                                                <option key={site} value={site}>{site}</option>
+                                                            ))}
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Pre-Sent</label>
+                                                        <input
+                                                            type="date"
+                                                            name="datePreSent"
+                                                            value={rewaterForm.datePreSent}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Recovered</label>
+                                                        <input
+                                                            type="date"
+                                                            name="dateRecovered"
+                                                            value={rewaterForm.dateRecovered}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Pig Size</label>
+                                                        <select
+                                                            name="pigSize"
+                                                            value={rewaterForm.pigSize}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            required
+                                                        >
+                                                            <option value="">Select Size...</option>
+                                                            <option value="3 inch">3 inch</option>
+                                                            <option value="3.2 inch">3.2 inch</option>
+                                                            <option value="4 inch">4 inch</option>
+                                                            <option value="4.78 inch">4.78 inch</option>
+                                                            <option value="Linglass Size">Linglass Size</option>
+                                                            <option value="CD">CD</option>
+                                                            <option value="OLP">OLP</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Number of Pigs</label>
+                                                        <input
+                                                            type="number"
+                                                            name="numPigs"
+                                                            value={rewaterForm.numPigs}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">Pig Types</label>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="scraper"
+                                                                checked={rewaterForm.scraper}
+                                                                onChange={handleRewaterChange}
+                                                                className="w-5 h-5"
+                                                            />
+                                                            <span className="text-sm font-medium">Scraper</span>
+                                                        </label>
+                                                        <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="brush"
+                                                                checked={rewaterForm.brush}
+                                                                onChange={handleRewaterChange}
+                                                                className="w-5 h-5"
+                                                            />
+                                                            <span className="text-sm font-medium">Brush</span>
+                                                        </label>
+                                                        <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="filter"
+                                                                checked={rewaterForm.filter}
+                                                                onChange={handleRewaterChange}
+                                                                className="w-5 h-5"
+                                                            />
+                                                            <span className="text-sm font-medium">Filter</span>
+                                                        </label>
+                                                        <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="wiper"
+                                                                checked={rewaterForm.wiper}
+                                                                onChange={handleRewaterChange}
+                                                                className="w-5 h-5"
+                                                            />
+                                                            <span className="text-sm font-medium">Wiper</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-green-700 mb-1">Corrosion Inhibitor</label>
+                                                        <input
+                                                            type="number"
+                                                            name="corrosionInhibitor"
+                                                            value={rewaterForm.corrosionInhibitor}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-green-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-blue-700 mb-1">Wireline</label>
+                                                        <input
+                                                            type="number"
+                                                            name="wireline"
+                                                            value={rewaterForm.wireline}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-blue-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* PIGGING RECORD FORM WITH DROPDOWNS */}
+                                        {formType === 'pigging' && (
+                                            <>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                                    <select
+                                                        name="location"
+                                                        value={piggingForm.location}
+                                                        onChange={handlePiggingChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        required
+                                                    >
+                                                        <option value="">Select Location...</option>
+                                                        <optgroup label="Amelia Sites">
+                                                            {LSD_LOCATIONS['Amelia Sites'].map(site => (
+                                                                <option key={site} value={site}>{site}</option>
+                                                            ))}
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Sent</label>
+                                                        <input
+                                                            type="date"
+                                                            name="dateSent"
+                                                            value={piggingForm.dateSent}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Recovered</label>
+                                                        <input
+                                                            type="date"
+                                                            name="dateRecovered"
+                                                            value={piggingForm.dateRecovered}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Pipeline</label>
+                                                        <select
+                                                            name="pipeline"
+                                                            value={piggingForm.pipeline}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            required
+                                                        >
+                                                            <option value="">Select Pipeline...</option>
+                                                            {PIPELINE_NAMES.map(pipeline => (
+                                                                <option key={pipeline} value={pipeline}>{pipeline}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Usage</label>
+                                                        <select
+                                                            name="usage"
+                                                            value={piggingForm.usage}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        >
+                                                            <option value="S">S - Scraper</option>
+                                                            <option value="F">F - Filter</option>
+                                                            <option value="W">W - Wiper</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Pig Size</label>
+                                                        <select
+                                                            name="pigSize"
+                                                            value={piggingForm.pigSize}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            required
+                                                        >
+                                                            <option value="">Select Size...</option>
+                                                            <option value="3">3</option>
+                                                            <option value="3.2">3.2</option>
+                                                            <option value="4">4</option>
+                                                            <option value="4.3.2">4.3.2</option>
+                                                            <option value="Linglass #">Linglass #</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">License #</label>
+                                                        <input
+                                                            type="text"
+                                                            name="licenseNumber"
+                                                            value={piggingForm.licenseNumber}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            placeholder="e.g., 83351-7-14"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">CD</label>
+                                                        <input
+                                                            type="text"
+                                                            name="cd"
+                                                            value={piggingForm.cd}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Thickness</label>
+                                                        <input
+                                                            type="text"
+                                                            name="thickness"
+                                                            value={piggingForm.thickness}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Material</label>
+                                                        <select
+                                                            name="material"
+                                                            value={piggingForm.material}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        >
+                                                            <option value="">Select...</option>
+                                                            <option value="S">S</option>
+                                                            <option value="F">F</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Location 2</label>
+                                                        <input
+                                                            type="text"
+                                                            name="location2"
+                                                            value={piggingForm.location2}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Length (m)</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.1"
+                                                            name="length"
+                                                            value={piggingForm.length}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-orange-700 mb-1">Corrosion</label>
+                                                        <input
+                                                            type="number"
+                                                            name="corrosion"
+                                                            value={piggingForm.corrosion}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-orange-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-blue-700 mb-1">Wireline</label>
+                                                        <input
+                                                            type="number"
+                                                            name="wireline"
+                                                            value={piggingForm.wireline}
+                                                            onChange={handlePiggingChange}
+                                                            className="w-full border border-blue-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        <div className="flex gap-3 pt-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowForm(false)}
+                                                className="flex-1 bg-gray-200 text-gray-800 rounded-lg py-3 font-semibold active:scale-95 transition"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg py-3 font-semibold active:scale-95 transition"
+                                            >
+                                                Save Entry
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        ReactDOM.render(<PipelineIntegrityTracker />, document.getElementById('root'));
+    </script>
+</body>
+</html>
