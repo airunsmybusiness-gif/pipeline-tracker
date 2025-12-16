@@ -55,32 +55,23 @@
                 '05-18 to 12-17A'
             ],
             'Redwater Central Sites': [
-                'S-4-4',
-                'S-4-4',
-                'K-11-25',
-                'K-11-25',
-                'K-11 Pad',
-                'K-11 Pad',
-                'S-15-18R',
-                'S-15-18R',
-                '03/L-L/GR',
-                'K-11-G-R',
-                'PO/L-L/GR',
-                'S-L/L-GR',
-                'T-L/L-GR',
-                'R3/LFE/L/GR',
-                'K3/LFE/L/GR',
-                '18-3/PO-GR',
-                '5-R/R-L/GR'
+                '8-27-056-21w4 to 5-26 Accel',
+                '9-22-056-21w4 THRU 10-22-056-21w4 Pad to 7-22-056-21w4 Satt',
+                '10-15-056-21w4 to 15-15-056-21w4 riser to 7-22-056-21w4 Satt',
+                '11-22-056-21w4 Pad to 14-22-056-21w4 Satt',
+                '16-22-056-21w4 Pad to 14-22-056-21w4 Satt',
+                '14-22-056-21w4 Pad to 14-22-056-21w4 Batt',
+                '12-22-056-21w4 Pad to 14-22-056-21w4 Pad',
+                '15-22-056-21w4 to 14-22-056-21w4 Pad'
             ],
             'Bruderheim North Sites': [
-                'T-L/L-GR',
-                'PO/L-L-GR',
-                '5-L/GR',
-                'K-11-G-R',
-                'T3/L-3-L/GR',
-                'NoPods Part',
-                'S-4-4-1'
+                '12-07-56-20w4 to 15-07-56-20w4',
+                '4-13 thru 13-12 to12-07-56-20w4',
+                '06-08-56-20w4 to 15-07-56-20w4',
+                '3-08-56-20w4 to 6-08-56-20w4 Group line',
+                '3-08-56-20w4 to 6-08-56-20w4 Test Line',
+                '12-07-56-20w4 to 15-07-56-20w4 (SLUG)',
+                '11-08-56-20w4 (14-08) to 15-07-56-20w4'
             ],
             'Amelia Sites': [
                 '05-04-57-21 PAD to 05-04-57-21 Batt',
@@ -343,6 +334,186 @@
             }
         };
 
+        // 🗂️ REDWATER CENTRAL PIPELINE DATA - Auto-fills with waxworks
+        const REDWATER_DATA = {
+            '8-27-056-21w4 to 5-26 Accel': {
+                usage: 'Gas',
+                pigSize: '4"',
+                licenseNumber: '38200-3',
+                cd: '114.3',
+                thickness: '4.78',
+                material: 'S',
+                length: '0.59 / 5.08',
+                corrosionInhibitor: 10,
+                waxworks: 10
+            },
+            '9-22-056-21w4 THRU 10-22-056-21w4 Pad to 7-22-056-21w4 Satt': {
+                usage: 'EMUL',
+                pigSize: '3"',
+                licenseNumber: '42860-14 & 5',
+                cd: '88.9',
+                thickness: '4.78',
+                material: 'S',
+                length: '0.86 / 5.74',
+                corrosionInhibitor: 10,
+                waxworks: 10
+            },
+            '10-15-056-21w4 to 15-15-056-21w4 riser to 7-22-056-21w4 Satt': {
+                usage: 'EMUL',
+                pigSize: '4"',
+                licenseNumber: '8825-18 & 19',
+                cd: '114.3',
+                thickness: '3.96',
+                material: 'S',
+                length: '0.95 / 5.27',
+                corrosionInhibitor: 15,
+                waxworks: 15
+            },
+            '11-22-056-21w4 Pad to 14-22-056-21w4 Satt': {
+                usage: 'EMUL',
+                pigSize: '3"',
+                licenseNumber: '42860-11',
+                cd: '88.9',
+                thickness: '5.49',
+                material: 'S',
+                length: '0.45 / 2.14',
+                corrosionInhibitor: 10,
+                waxworks: 10
+            },
+            '16-22-056-21w4 Pad to 14-22-056-21w4 Satt': {
+                usage: 'EMUL',
+                pigSize: '4"',
+                licenseNumber: '42860-10',
+                cd: '114.3',
+                thickness: '6.02',
+                material: 'S',
+                length: '0.78 / 6.4',
+                corrosionInhibitor: 13,
+                waxworks: 13
+            },
+            '14-22-056-21w4 Pad to 14-22-056-21w4 Batt': {
+                usage: 'EMUL',
+                pigSize: '4"',
+                licenseNumber: 'OLP',
+                cd: '',
+                thickness: '',
+                material: 'S',
+                length: '0.1 / ?',
+                corrosionInhibitor: 10,
+                waxworks: 10
+            },
+            '12-22-056-21w4 Pad to 14-22-056-21w4 Pad': {
+                usage: 'EMUL',
+                pigSize: '4"',
+                licenseNumber: '42860-15',
+                cd: '114.3',
+                thickness: '4',
+                material: 'S',
+                length: '0.62 / 5.5',
+                corrosionInhibitor: 10,
+                waxworks: 10
+            },
+            '15-22-056-21w4 to 14-22-056-21w4 Pad': {
+                usage: 'EMUL',
+                pigSize: '3"',
+                licenseNumber: '42860-9',
+                cd: '88.9',
+                thickness: '3.96',
+                material: 'S',
+                length: '0.37 / 1.9',
+                corrosionInhibitor: 0,
+                waxworks: 0
+            }
+        };
+
+        // 🗂️ BRUDERHEIM NORTH PIPELINE DATA - Auto-fills with diluent instead of wireline
+        const BRUDERHEIM_DATA = {
+            '12-07-56-20w4 to 15-07-56-20w4': {
+                usage: 'EMUL',
+                pigSize: '3"',
+                licenseNumber: '33351-12 & 4',
+                cd: '88.9',
+                thickness: '3.2',
+                material: 'S',
+                location2: '',
+                length: '0.47',
+                corrosion: 10,
+                diluent: 10
+            },
+            '4-13 thru 13-12 to12-07-56-20w4': {
+                usage: 'EMUL',
+                pigSize: '3"',
+                licenseNumber: '33351-72 & 21',
+                cd: '88.9',
+                thickness: '4 / 3.2',
+                material: 'S',
+                location2: '',
+                length: '0.24/2.73',
+                corrosion: 38,
+                diluent: 38
+            },
+            '06-08-56-20w4 to 15-07-56-20w4': {
+                usage: 'EMUL',
+                pigSize: '3',
+                licenseNumber: '33351-10',
+                cd: '88.9',
+                thickness: '3.2',
+                material: 'S',
+                location2: '',
+                length: '2.03',
+                corrosion: 26,
+                diluent: 26
+            },
+            '3-08-56-20w4 to 6-08-56-20w4 Group line': {
+                usage: 'EMUL',
+                pigSize: '4',
+                licenseNumber: '33351-70',
+                cd: '114.3',
+                thickness: '3.2',
+                material: 'S',
+                location2: '',
+                length: '0.18',
+                corrosion: 10,
+                diluent: 10
+            },
+            '3-08-56-20w4 to 6-08-56-20w4 Test Line': {
+                usage: 'EMUL',
+                pigSize: '4',
+                licenseNumber: '33351-71',
+                cd: '114.3',
+                thickness: '3.2',
+                material: 'S',
+                location2: '',
+                length: '0.18',
+                corrosion: 10,
+                diluent: 10
+            },
+            '12-07-56-20w4 to 15-07-56-20w4 (SLUG)': {
+                usage: 'EMUL',
+                pigSize: '3"',
+                licenseNumber: '33351-12 & 4',
+                cd: '88.9',
+                thickness: '3.2',
+                material: 'S',
+                location2: '',
+                length: '0.47',
+                corrosion: 10,
+                diluent: 10
+            },
+            '11-08-56-20w4 (14-08) to 15-07-56-20w4': {
+                usage: 'EMUL',
+                pigSize: '3',
+                licenseNumber: '33351-14',
+                cd: '88.9',
+                thickness: '3.2',
+                material: 'S',
+                location2: '',
+                length: '1.81',
+                corrosion: 23,
+                diluent: 23
+            }
+        };
+
         function PipelineIntegrityTracker() {
             const [entries, setEntries] = useState(() => {
                 const saved = localStorage.getItem('pipelineEntries');
@@ -382,14 +553,20 @@
                 datePreSent: new Date().toISOString().split('T')[0],
                 dateRecovered: '',
                 site: '',
+                usage: '',
                 pigSize: '',
+                licenseNumber: '',
+                cd: '',
+                thickness: '',
+                material: '',
+                length: '',
                 numPigs: 0,
                 scraper: false,
                 brush: false,
-                filter: false,
-                wiper: false,
+                filmer: false,
+                wire: false,
                 corrosionInhibitor: 0,
-                wireline: 0
+                waxworks: 0
             });
 
             const [piggingForm, setPiggingForm] = useState({
@@ -409,6 +586,26 @@
                 wireline: 0
             });
 
+            const [bruderheimForm, setBruderheimForm] = useState({
+                location: '',
+                dateSent: new Date().toISOString().split('T')[0],
+                dateRecovered: '',
+                pipeline: '',
+                usage: '',
+                pigSize: '',
+                licenseNumber: '',
+                cd: '',
+                thickness: '',
+                material: '',
+                location2: '',
+                length: '',
+                corrosion: 0,
+                diluent: 0,
+                scraper: false,
+                push: false,
+                filmer: false
+            });
+
             const handleBatchChange = (e) => {
                 const { name, value } = e.target;
                 setBatchForm(prev => ({ ...prev, [name]: value }));
@@ -416,10 +613,29 @@
 
             const handleRewaterChange = (e) => {
                 const { name, value, type, checked } = e.target;
-                setRewaterForm(prev => ({
-                    ...prev,
-                    [name]: type === 'checkbox' ? checked : value
-                }));
+                
+                // If site changes and we have data for it, auto-fill all fields
+                if (name === 'site' && REDWATER_DATA[value]) {
+                    const data = REDWATER_DATA[value];
+                    setRewaterForm(prev => ({
+                        ...prev,
+                        site: value,
+                        usage: data.usage,
+                        pigSize: data.pigSize,
+                        licenseNumber: data.licenseNumber,
+                        cd: data.cd,
+                        thickness: data.thickness,
+                        material: data.material,
+                        length: data.length,
+                        corrosionInhibitor: data.corrosionInhibitor,
+                        waxworks: data.waxworks
+                    }));
+                } else {
+                    setRewaterForm(prev => ({
+                        ...prev,
+                        [name]: type === 'checkbox' ? checked : value
+                    }));
+                }
             };
 
             const handlePiggingChange = (e) => {
@@ -467,6 +683,36 @@
                 }
             };
 
+            const handleBruderheimChange = (e) => {
+                const { name, value, type, checked } = e.target;
+                
+                // If location/pipeline changes and we have data for it, auto-fill all fields
+                if ((name === 'location' || name === 'pipeline') && BRUDERHEIM_DATA[value]) {
+                    const data = BRUDERHEIM_DATA[value];
+                    setBruderheimForm(prev => ({
+                        ...prev,
+                        location: value,
+                        pipeline: value,
+                        usage: data.usage,
+                        pigSize: data.pigSize,
+                        licenseNumber: data.licenseNumber,
+                        cd: data.cd,
+                        thickness: data.thickness,
+                        material: data.material,
+                        location2: data.location2,
+                        length: data.length,
+                        corrosion: data.corrosion,
+                        diluent: data.diluent
+                    }));
+                } else {
+                    // Normal field update
+                    setBruderheimForm(prev => ({
+                        ...prev,
+                        [name]: type === 'checkbox' ? checked : value
+                    }));
+                }
+            };
+
             const handleSubmit = (e) => {
                 e.preventDefault();
                 let newEntry = { 
@@ -486,9 +732,10 @@
                     newEntry = { ...newEntry, type: 'rewater', ...rewaterForm };
                     setRewaterForm({
                         datePreSent: new Date().toISOString().split('T')[0],
-                        dateRecovered: '', site: '', pigSize: '', numPigs: 0,
-                        scraper: false, brush: false, filter: false, wiper: false,
-                        corrosionInhibitor: 0, wireline: 0
+                        dateRecovered: '', site: '', usage: '', pigSize: '', licenseNumber: '',
+                        cd: '', thickness: '', material: '', length: '', numPigs: 0,
+                        scraper: false, brush: false, filmer: false, wire: false,
+                        corrosionInhibitor: 0, waxworks: 0
                     });
                 } else if (formType === 'pigging') {
                     newEntry = { ...newEntry, type: 'pigging', ...piggingForm };
@@ -497,6 +744,15 @@
                         dateRecovered: '', pipeline: '', usage: 'S', pigSize: '',
                         licenseNumber: '', cd: '', thickness: '', material: '',
                         location2: '', length: '', corrosion: 0, wireline: 0
+                    });
+                } else if (formType === 'bruderheim') {
+                    newEntry = { ...newEntry, type: 'bruderheim', ...bruderheimForm };
+                    setBruderheimForm({
+                        location: '', dateSent: new Date().toISOString().split('T')[0],
+                        dateRecovered: '', pipeline: '', usage: '', pigSize: '',
+                        licenseNumber: '', cd: '', thickness: '', material: '',
+                        location2: '', length: '', corrosion: 0, diluent: 0,
+                        scraper: false, push: false, filmer: false
                     });
                 }
 
@@ -576,7 +832,7 @@
                             ...acc,
                             rewaterPigs: acc.rewaterPigs + (parseInt(entry.numPigs) || 0),
                             rewaterCorrosion: acc.rewaterCorrosion + (parseInt(entry.corrosionInhibitor) || 0),
-                            rewaterWireline: acc.rewaterWireline + (parseInt(entry.wireline) || 0)
+                            rewaterWaxworks: acc.rewaterWaxworks + (parseInt(entry.waxworks) || 0)
                         };
                     } else if (entry.type === 'pigging') {
                         return {
@@ -585,12 +841,20 @@
                             piggingWireline: acc.piggingWireline + (parseInt(entry.wireline) || 0),
                             totalLength: acc.totalLength + (parseFloat(entry.length) || 0)
                         };
+                    } else if (entry.type === 'bruderheim') {
+                        return {
+                            ...acc,
+                            bruderheimCorrosion: acc.bruderheimCorrosion + (parseInt(entry.corrosion) || 0),
+                            bruderheimDiluent: acc.bruderheimDiluent + (parseInt(entry.diluent) || 0),
+                            bruderheimLength: acc.bruderheimLength + (parseFloat(entry.length) || 0)
+                        };
                     }
                     return acc;
                 }, {
                     corrosion: 0, biocide: 0, both: 0, pigs: 0,
-                    rewaterPigs: 0, rewaterCorrosion: 0, rewaterWireline: 0,
-                    piggingCorrosion: 0, piggingWireline: 0, totalLength: 0
+                    rewaterPigs: 0, rewaterCorrosion: 0, rewaterWaxworks: 0,
+                    piggingCorrosion: 0, piggingWireline: 0, totalLength: 0,
+                    bruderheimCorrosion: 0, bruderheimDiluent: 0, bruderheimLength: 0
                 });
             };
 
@@ -713,6 +977,16 @@
                                     >
                                         Pigging
                                     </button>
+                                    <button
+                                        onClick={() => setFilterType('bruderheim')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition ${
+                                            filterType === 'bruderheim'
+                                                ? 'bg-blue-600 text-white'
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}
+                                    >
+                                        Bruderheim
+                                    </button>
                                 </div>
 
                                 {(filterType === 'all' || filterType === 'batch') && (
@@ -752,8 +1026,8 @@
                                                 <div className="text-3xl font-bold text-gray-900 mt-1">{totals.rewaterCorrosion}</div>
                                             </div>
                                             <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-indigo-500 col-span-2">
-                                                <div className="text-gray-600 text-xs font-medium uppercase">Wireline</div>
-                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.rewaterWireline}</div>
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Waxworks</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.rewaterWaxworks}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -774,6 +1048,26 @@
                                             <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-teal-500 col-span-2">
                                                 <div className="text-gray-600 text-xs font-medium uppercase">Total Length (m)</div>
                                                 <div className="text-3xl font-bold text-gray-900 mt-1">{totals.totalLength.toFixed(1)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {(filterType === 'all' || filterType === 'bruderheim') && (
+                                    <div>
+                                        <h3 className="text-lg font-bold text-gray-900 mb-3">Bruderheim North</h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Corrosion (Vol L)</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.bruderheimCorrosion}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-indigo-500">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Diluent (Vol L)</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.bruderheimDiluent}</div>
+                                            </div>
+                                            <div className="bg-white rounded-xl shadow-md p-4 border-l-4 border-cyan-500 col-span-2">
+                                                <div className="text-gray-600 text-xs font-medium uppercase">Total Length (km)</div>
+                                                <div className="text-3xl font-bold text-gray-900 mt-1">{totals.bruderheimLength.toFixed(2)}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -802,7 +1096,8 @@
                                                         <div className="flex items-center gap-2">
                                                             <span className={`inline-block px-2 py-1 rounded text-xs font-bold text-white ${
                                                                 entry.type === 'batch' ? 'bg-green-500' :
-                                                                entry.type === 'rewater' ? 'bg-purple-500' : 'bg-orange-500'
+                                                                entry.type === 'rewater' ? 'bg-purple-500' : 
+                                                                entry.type === 'pigging' ? 'bg-orange-500' : 'bg-blue-500'
                                                             }`}>
                                                                 {entry.type.toUpperCase()}
                                                             </span>
@@ -865,6 +1160,14 @@
                                     >
                                         Pigging
                                     </button>
+                                    <button
+                                        onClick={() => setFilterType('bruderheim')}
+                                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
+                                            filterType === 'bruderheim' ? 'bg-blue-600 text-white' : 'bg-gray-100'
+                                        }`}
+                                    >
+                                        Bruderheim
+                                    </button>
                                 </div>
 
                                 {filteredEntries.length === 0 ? (
@@ -877,14 +1180,16 @@
                                     filteredEntries.map(entry => (
                                         <div key={entry.id} className={`bg-white rounded-xl shadow-md overflow-hidden border-l-4 ${
                                             entry.type === 'batch' ? 'border-green-500' :
-                                            entry.type === 'rewater' ? 'border-purple-500' : 'border-orange-500'
+                                            entry.type === 'rewater' ? 'border-purple-500' : 
+                                            entry.type === 'pigging' ? 'border-orange-500' : 'border-blue-500'
                                         }`}>
                                             <div className="p-4">
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div className="flex items-center gap-2">
                                                         <span className={`px-3 py-1 rounded-lg text-xs font-bold text-white ${
                                                             entry.type === 'batch' ? 'bg-green-500' :
-                                                            entry.type === 'rewater' ? 'bg-purple-500' : 'bg-orange-500'
+                                                            entry.type === 'rewater' ? 'bg-purple-500' : 
+                                                            entry.type === 'pigging' ? 'bg-orange-500' : 'bg-blue-500'
                                                         }`}>
                                                             {entry.type.toUpperCase()}
                                                         </span>
@@ -955,8 +1260,8 @@
                                                                 <div className="text-xs">
                                                                     {entry.scraper && '🔧 Scraper '}
                                                                     {entry.brush && '🖌️ Brush '}
-                                                                    {entry.filter && '🔍 Filter '}
-                                                                    {entry.wiper && '🧹 Wiper'}
+                                                                    {entry.filmer && '🎬 Filmer '}
+                                                                    {entry.wire && '📏 Wire'}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -965,12 +1270,14 @@
                                                                 <div className="text-xs text-green-600">Corr. Inh.</div>
                                                                 <div className="text-lg font-bold text-green-700">{entry.corrosionInhibitor}</div>
                                                             </div>
-                                                            <div className="bg-blue-50 rounded p-2 text-center">
-                                                                <div className="text-xs text-blue-600">Wireline</div>
-                                                                <div className="text-lg font-bold text-blue-700">{entry.wireline}</div>
+                                                            <div className="bg-indigo-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-indigo-600">Waxworks</div>
+                                                                <div className="text-lg font-bold text-indigo-700">{entry.waxworks}</div>
                                                             </div>
                                                         </div>
                                                         <div className="text-xs text-gray-600 border-t pt-2">
+                                                            <div>Usage: {entry.usage} | License: {entry.licenseNumber}</div>
+                                                            <div>Length: {entry.length} km | Material: {entry.material}</div>
                                                             <div>Sent: {entry.datePreSent}</div>
                                                             {entry.dateRecovered && <div>Recovered: {entry.dateRecovered}</div>}
                                                         </div>
@@ -1010,6 +1317,51 @@
                                                         </div>
                                                         <div className="text-xs text-gray-600 border-t pt-2">
                                                             <div>Material: {entry.material} | Thickness: {entry.thickness}</div>
+                                                            <div>Sent: {entry.dateSent} {entry.dateRecovered && `| Recovered: ${entry.dateRecovered}`}</div>
+                                                        </div>
+                                                    </>
+                                                )}
+
+                                                {/* Bruderheim Entry */}
+                                                {entry.type === 'bruderheim' && (
+                                                    <>
+                                                        <div className="text-lg font-bold text-gray-900 mb-2">{entry.location}</div>
+                                                        <div className="grid grid-cols-2 gap-2 mb-3 text-sm">
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Pipeline</div>
+                                                                <div className="font-semibold">{entry.pipeline}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Pig Size</div>
+                                                                <div className="font-semibold">{entry.pigSize}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">License</div>
+                                                                <div className="font-semibold">{entry.licenseNumber}</div>
+                                                            </div>
+                                                            <div className="bg-gray-50 rounded p-2">
+                                                                <div className="text-xs text-gray-600">Length (km)</div>
+                                                                <div className="font-semibold">{entry.length}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="mb-2 text-xs">
+                                                            <span className="text-gray-600">Pig Types: </span>
+                                                            {entry.scraper && '🔧 Scraper '}
+                                                            {entry.push && '⬆️ Push '}
+                                                            {entry.filmer && '🎬 Filmer'}
+                                                        </div>
+                                                        <div className="grid grid-cols-2 gap-2 mb-2">
+                                                            <div className="bg-blue-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-blue-600">Corrosion (Vol L)</div>
+                                                                <div className="text-lg font-bold text-blue-700">{entry.corrosion}</div>
+                                                            </div>
+                                                            <div className="bg-indigo-50 rounded p-2 text-center">
+                                                                <div className="text-xs text-indigo-600">Diluent (Vol L)</div>
+                                                                <div className="text-lg font-bold text-indigo-700">{entry.diluent}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-xs text-gray-600 border-t pt-2">
+                                                            <div>Material: {entry.material} | Thickness: {entry.thickness} | OD: {entry.cd}</div>
                                                             <div>Sent: {entry.dateSent} {entry.dateRecovered && `| Recovered: ${entry.dateRecovered}`}</div>
                                                         </div>
                                                     </>
@@ -1088,7 +1440,7 @@
 
                                     <div className="p-4 border-b bg-gray-50">
                                         <label className="block text-sm font-medium text-gray-700 mb-2">Form Type</label>
-                                        <div className="grid grid-cols-3 gap-2">
+                                        <div className="grid grid-cols-2 gap-2">
                                             <button
                                                 type="button"
                                                 onClick={() => setFormType('batch')}
@@ -1121,6 +1473,17 @@
                                                 }`}
                                             >
                                                 Pigging
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormType('bruderheim')}
+                                                className={`py-3 rounded-lg text-sm font-semibold transition ${
+                                                    formType === 'bruderheim'
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'bg-white border-2 border-gray-300 text-gray-700'
+                                                }`}
+                                            >
+                                                Bruderheim
                                             </button>
                                         </div>
                                     </div>
@@ -1256,7 +1619,7 @@
                                         {formType === 'rewater' && (
                                             <>
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Site Location</label>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Pipeline Location</label>
                                                     <select
                                                         name="site"
                                                         value={rewaterForm.site}
@@ -1264,14 +1627,9 @@
                                                         className="w-full border border-gray-300 rounded-lg px-3 py-2"
                                                         required
                                                     >
-                                                        <option value="">Select Site...</option>
-                                                        <optgroup label="Redwater Central Sites">
+                                                        <option value="">Select Pipeline...</option>
+                                                        <optgroup label="Redwater Central">
                                                             {LSD_LOCATIONS['Redwater Central Sites'].map(site => (
-                                                                <option key={site} value={site}>{site}</option>
-                                                            ))}
-                                                        </optgroup>
-                                                        <optgroup label="Bruderheim North Sites">
-                                                            {LSD_LOCATIONS['Bruderheim North Sites'].map(site => (
                                                                 <option key={site} value={site}>{site}</option>
                                                             ))}
                                                         </optgroup>
@@ -1279,7 +1637,7 @@
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Pre-Sent</label>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Pig Sent</label>
                                                         <input
                                                             type="date"
                                                             name="datePreSent"
@@ -1290,46 +1648,13 @@
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Recovered</label>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Pig Pulled</label>
                                                         <input
                                                             type="date"
                                                             name="dateRecovered"
                                                             value={rewaterForm.dateRecovered}
                                                             onChange={handleRewaterChange}
                                                             className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="grid grid-cols-2 gap-3">
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Pig Size</label>
-                                                        <select
-                                                            name="pigSize"
-                                                            value={rewaterForm.pigSize}
-                                                            onChange={handleRewaterChange}
-                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                                                            required
-                                                        >
-                                                            <option value="">Select Size...</option>
-                                                            <option value="3 inch">3 inch</option>
-                                                            <option value="3.2 inch">3.2 inch</option>
-                                                            <option value="4 inch">4 inch</option>
-                                                            <option value="4.78 inch">4.78 inch</option>
-                                                            <option value="Linglass Size">Linglass Size</option>
-                                                            <option value="CD">CD</option>
-                                                            <option value="OLP">OLP</option>
-                                                        </select>
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Number of Pigs</label>
-                                                        <input
-                                                            type="number"
-                                                            name="numPigs"
-                                                            value={rewaterForm.numPigs}
-                                                            onChange={handleRewaterChange}
-                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                                                            min="0"
-                                                            required
                                                         />
                                                     </div>
                                                 </div>
@@ -1359,24 +1684,119 @@
                                                         <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
                                                             <input
                                                                 type="checkbox"
-                                                                name="filter"
-                                                                checked={rewaterForm.filter}
+                                                                name="filmer"
+                                                                checked={rewaterForm.filmer}
                                                                 onChange={handleRewaterChange}
                                                                 className="w-5 h-5"
                                                             />
-                                                            <span className="text-sm font-medium">Filter</span>
+                                                            <span className="text-sm font-medium">Filmer</span>
                                                         </label>
                                                         <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
                                                             <input
                                                                 type="checkbox"
-                                                                name="wiper"
-                                                                checked={rewaterForm.wiper}
+                                                                name="wire"
+                                                                checked={rewaterForm.wire}
                                                                 onChange={handleRewaterChange}
                                                                 className="w-5 h-5"
                                                             />
-                                                            <span className="text-sm font-medium">Wiper</span>
+                                                            <span className="text-sm font-medium">Wire</span>
                                                         </label>
                                                     </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Usage</label>
+                                                        <select
+                                                            name="usage"
+                                                            value={rewaterForm.usage}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        >
+                                                            <option value="">Select...</option>
+                                                            <option value="EMUL">EMUL</option>
+                                                            <option value="Gas">Gas</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Pig Size</label>
+                                                        <input
+                                                            type="text"
+                                                            name="pigSize"
+                                                            value={rewaterForm.pigSize}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Pipeline License #</label>
+                                                    <input
+                                                        type="text"
+                                                        name="licenseNumber"
+                                                        value={rewaterForm.licenseNumber}
+                                                        onChange={handleRewaterChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">OD</label>
+                                                        <input
+                                                            type="text"
+                                                            name="cd"
+                                                            value={rewaterForm.cd}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Thickness</label>
+                                                        <input
+                                                            type="text"
+                                                            name="thickness"
+                                                            value={rewaterForm.thickness}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Material</label>
+                                                        <input
+                                                            type="text"
+                                                            name="material"
+                                                            value={rewaterForm.material}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Length (km / m3)</label>
+                                                    <input
+                                                        type="text"
+                                                        name="length"
+                                                        value={rewaterForm.length}
+                                                        onChange={handleRewaterChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Number of Pigs</label>
+                                                    <input
+                                                        type="number"
+                                                        name="numPigs"
+                                                        value={rewaterForm.numPigs}
+                                                        onChange={handleRewaterChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        min="0"
+                                                        required
+                                                    />
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     <div>
@@ -1386,15 +1806,24 @@
                                                             name="corrosionInhibitor"
                                                             value={rewaterForm.corrosionInhibitor}
                                                             onChange={handleRewaterChange}
-                                                            className="w-full border border-green-300 rounded-lg px-3 py-2"
+                                                            className="w-full border border-green-300 rounded-lg px-3 py-2 bg-green-50"
                                                             min="0"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-sm font-medium text-blue-700 mb-1">Wireline</label>
+                                                        <label className="block text-sm font-medium text-indigo-700 mb-1">Waxworks</label>
                                                         <input
                                                             type="number"
-                                                            name="wireline"
+                                                            name="waxworks"
+                                                            value={rewaterForm.waxworks}
+                                                            onChange={handleRewaterChange}
+                                                            className="w-full border border-indigo-300 rounded-lg px-3 py-2 bg-indigo-50"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
                                                             value={rewaterForm.wireline}
                                                             onChange={handleRewaterChange}
                                                             className="w-full border border-blue-300 rounded-lg px-3 py-2"
@@ -1588,6 +2017,194 @@
                                                             value={piggingForm.wireline}
                                                             onChange={handlePiggingChange}
                                                             className="w-full border border-blue-300 rounded-lg px-3 py-2"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* BRUDERHEIM NORTH FORM */}
+                                        {formType === 'bruderheim' && (
+                                            <>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Pipeline Location</label>
+                                                    <select
+                                                        name="location"
+                                                        value={bruderheimForm.location}
+                                                        onChange={handleBruderheimChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        required
+                                                    >
+                                                        <option value="">Select Pipeline...</option>
+                                                        <optgroup label="Bruderheim North">
+                                                            {LSD_LOCATIONS['Bruderheim North Sites'].map(site => (
+                                                                <option key={site} value={site}>{site}</option>
+                                                            ))}
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Sent</label>
+                                                        <input
+                                                            type="date"
+                                                            name="dateSent"
+                                                            value={bruderheimForm.dateSent}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                            required
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Date Recovered</label>
+                                                        <input
+                                                            type="date"
+                                                            name="dateRecovered"
+                                                            value={bruderheimForm.dateRecovered}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">Pig Types</label>
+                                                    <div className="grid grid-cols-3 gap-2">
+                                                        <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="scraper"
+                                                                checked={bruderheimForm.scraper}
+                                                                onChange={handleBruderheimChange}
+                                                                className="w-5 h-5"
+                                                            />
+                                                            <span className="text-sm font-medium">Scraper</span>
+                                                        </label>
+                                                        <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="push"
+                                                                checked={bruderheimForm.push}
+                                                                onChange={handleBruderheimChange}
+                                                                className="w-5 h-5"
+                                                            />
+                                                            <span className="text-sm font-medium">Push</span>
+                                                        </label>
+                                                        <label className="flex items-center space-x-2 bg-gray-50 p-3 rounded-lg cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                name="filmer"
+                                                                checked={bruderheimForm.filmer}
+                                                                onChange={handleBruderheimChange}
+                                                                className="w-5 h-5"
+                                                            />
+                                                            <span className="text-sm font-medium">Filmer</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Usage</label>
+                                                        <select
+                                                            name="usage"
+                                                            value={bruderheimForm.usage}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                                        >
+                                                            <option value="">Select...</option>
+                                                            <option value="EMUL">EMUL</option>
+                                                            <option value="Gas">Gas</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Pig Size</label>
+                                                        <input
+                                                            type="text"
+                                                            name="pigSize"
+                                                            value={bruderheimForm.pigSize}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Pipeline License #</label>
+                                                    <input
+                                                        type="text"
+                                                        name="licenseNumber"
+                                                        value={bruderheimForm.licenseNumber}
+                                                        onChange={handleBruderheimChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">OD</label>
+                                                        <input
+                                                            type="text"
+                                                            name="cd"
+                                                            value={bruderheimForm.cd}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Thickness</label>
+                                                        <input
+                                                            type="text"
+                                                            name="thickness"
+                                                            value={bruderheimForm.thickness}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">Material</label>
+                                                        <input
+                                                            type="text"
+                                                            name="material"
+                                                            value={bruderheimForm.material}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                            readOnly
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Length (km)</label>
+                                                    <input
+                                                        type="text"
+                                                        name="length"
+                                                        value={bruderheimForm.length}
+                                                        onChange={handleBruderheimChange}
+                                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-50"
+                                                        readOnly
+                                                    />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-blue-700 mb-1">Corrosion (Vol L)</label>
+                                                        <input
+                                                            type="number"
+                                                            name="corrosion"
+                                                            value={bruderheimForm.corrosion}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-blue-300 rounded-lg px-3 py-2 bg-blue-50"
+                                                            min="0"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-indigo-700 mb-1">Diluent (Vol L)</label>
+                                                        <input
+                                                            type="number"
+                                                            name="diluent"
+                                                            value={bruderheimForm.diluent}
+                                                            onChange={handleBruderheimChange}
+                                                            className="w-full border border-indigo-300 rounded-lg px-3 py-2 bg-indigo-50"
                                                             min="0"
                                                         />
                                                     </div>
